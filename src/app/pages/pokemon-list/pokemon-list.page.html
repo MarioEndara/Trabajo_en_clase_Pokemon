@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-toolbar color="danger">
+    <ion-title>PokeApp - Laboratorio</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item *ngFor="let pokemon of pokemons">
+      <ion-label>
+        <h2>{{ pokemon.name | titlecase }}</h2>
+        <p>Detalles del Pokémon</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
