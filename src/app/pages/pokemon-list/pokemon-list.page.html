@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="danger">
-    <ion-title>Pokédex - Nivel 1</ion-title>
+    <ion-title>Pokédex - Nivel 2</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -19,18 +19,32 @@
     <ion-spinner name="crescent" color="danger"></ion-spinner>
   </div>
 
-  <!-- Tarjeta de Detalles con Iconos -->
+  <!-- Tarjeta de Detalles - Nivel 2 -->
   <ion-card *ngIf="selectedPokemon" color="light">
-    <div class="ion-text-center">
-      <ion-img [src]="selectedPokemon.sprites.front_default" style="width: 120px; height: 120px; margin: 0 auto;"></ion-img>
+    
+    <!-- Sprite Animado (GIF / WebP) -->
+    <div class="ion-text-center ion-padding-top">
+      <ion-img [src]="animatedSprite" style="width: 100px; height: 100px; margin: 0 auto;" alt="Sprite Animado"></ion-img>
+      <ion-badge color="success">Animación GIF</ion-badge>
     </div>
+
     <ion-card-header>
       <ion-card-title class="ion-text-capitalize ion-text-center">
-        <ion-icon name="flash" color="warning"></ion-icon>
         {{ selectedPokemon.name }} (#{{ selectedPokemon.id }})
       </ion-card-title>
     </ion-card-header>
+
     <ion-card-content>
+      
+      <!-- Botón para reproducir sonido -->
+      <div class="ion-text-center ion-margin-bottom">
+        <ion-button color="warning" expand="block" (click)="playSound()">
+          <ion-icon name="volume-high" slot="start"></ion-icon>
+          Reproducir Sonido del Pokémon
+        </ion-button>
+      </div>
+
+      <!-- Información básica -->
       <ion-item lines="none">
         <ion-icon name="color-palette" slot="start" color="primary"></ion-icon>
         <ion-label><strong>Tipo(s):</strong> 
@@ -39,23 +53,34 @@
           </span>
         </ion-label>
       </ion-item>
+      
       <ion-item lines="none">
         <ion-icon name="resize" slot="start" color="success"></ion-icon>
         <ion-label><strong>Altura:</strong> {{ selectedPokemon.height / 10 }} m</ion-label>
         <ion-icon name="fitness" slot="start" color="danger"></ion-icon>
         <ion-label><strong>Peso:</strong> {{ selectedPokemon.weight / 10 }} kg</ion-label>
       </ion-item>
+
+      <!-- Galería de al menos 5 imágenes -->
+      <div class="ion-margin-top">
+        <ion-label><strong>Galería (5+ Imágenes):</strong></ion-label>
+        <div style="display: flex; overflow-x: auto; gap: 10px; padding: 10px 0;">
+          <div *ngFor="let imgUrl of pokemonImages" style="min-width: 80px; background: white; border-radius: 8px; padding: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <ion-img [src]="imgUrl" style="width: 70px; height: 70px;"></ion-img>
+          </div>
+        </div>
+      </div>
+
     </ion-card-content>
   </ion-card>
 
-  <!-- Lista de Pokémon con su mini sprite real -->
+  <!-- Lista de Pokémon iniciales -->
   <ion-list *ngIf="!loading">
     <ion-list-header>
       <ion-label><strong>Listado de Pokémon</strong> (Toca uno para ver detalles)</ion-label>
     </ion-list-header>
     
     <ion-item *ngFor="let p of filteredPokemonList" (click)="selectPokemon(p.url)" button>
-      <!-- Miniatura real obtenida mediante el ID extraído de la URL -->
       <ion-avatar slot="start">
         <img [src]="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + getPokemonId(p.url) + '.png'" alt="{{ p.name }}" />
       </ion-avatar>
