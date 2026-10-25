@@ -1,20 +1,63 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="danger">
     <ion-title>
-      Blank
+      Pokédex - Nivel 1
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
+  
+  <!-- Buscador -->
+  <ion-searchbar 
+    [(ngModel)]="searchTerm" 
+    (ionChange)="searchPokemon()" 
+    placeholder="Busca por nombre o ID (ej. pikachu)"
+    debounce="500">
+  </ion-searchbar>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <!-- Spinner de carga -->
+  <div class="ion-text-center ion-padding" *ngIf="loading">
+    <ion-spinner name="crescent" color="danger"></ion-spinner>
   </div>
+
+  <!-- Mensaje de error -->
+  <ion-item *ngIf="errorMessage" lines="none">
+    <ion-label color="danger" class="ion-text-wrap">{{ errorMessage }}</ion-label>
+  </ion-item>
+
+  <!-- Tarjeta de Detalles del Pokémon -->
+  <ion-card *ngIf="pokemon" class="ion-padding">
+    <div class="ion-text-center">
+      <ion-img [src]="pokemon.sprites.front_default" style="width: 150px; height: 150px; margin: 0 auto;"></ion-img>
+    </div>
+    
+    <ion-card-header>
+      <ion-card-title class="ion-text-capitalize ion-text-center">
+        {{ pokemon.name }} (#{{ pokemon.id }})
+      </ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item>
+        <ion-label><strong>Tipo(s):</strong></ion-label>
+        <ion-label class="ion-text-end">
+          <span *ngFor="let t of pokemon.types; let last = last">
+            {{ t.type.name }}{{ !last ? ', ' : '' }}
+          </span>
+        </ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label><strong>Altura:</strong></ion-label>
+        <ion-label class="ion-text-end">{{ pokemon.height / 10 }} m</ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label><strong>Peso:</strong></ion-label>
+        <ion-label class="ion-text-end">{{ pokemon.weight / 10 }} kg</ion-label>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
 </ion-content>

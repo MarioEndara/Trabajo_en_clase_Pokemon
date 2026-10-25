@@ -1,16 +1,72 @@
 <ion-header>
   <ion-toolbar color="danger">
-    <ion-title>PokeApp - Laboratorio</ion-title>
+    <ion-title>Pokédex - Nivel 1</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-list>
-    <ion-item *ngFor="let pokemon of pokemons">
-      <ion-label>
-        <h2>{{ pokemon.name | titlecase }}</h2>
-        <p>Detalles del Pokémon</p>
+  
+  <!-- Buscador -->
+  <ion-searchbar 
+    [(ngModel)]="searchTerm" 
+    (ionInput)="filterPokemons()" 
+    placeholder="Busca un Pokémon..."
+    debounce="300">
+  </ion-searchbar>
+
+  <!-- Spinner de carga -->
+  <div class="ion-text-center ion-padding" *ngIf="loading">
+    <ion-spinner name="crescent" color="danger"></ion-spinner>
+  </div>
+
+  <!-- Tarjeta de Detalles con Iconos -->
+  <ion-card *ngIf="selectedPokemon" color="light">
+    <div class="ion-text-center">
+      <ion-img [src]="selectedPokemon.sprites.front_default" style="width: 120px; height: 120px; margin: 0 auto;"></ion-img>
+    </div>
+    <ion-card-header>
+      <ion-card-title class="ion-text-capitalize ion-text-center">
+        <ion-icon name="flash" color="warning"></ion-icon>
+        {{ selectedPokemon.name }} (#{{ selectedPokemon.id }})
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item lines="none">
+        <ion-icon name="color-palette" slot="start" color="primary"></ion-icon>
+        <ion-label><strong>Tipo(s):</strong> 
+          <span *ngFor="let t of selectedPokemon.types; let last = last">
+            {{ t.type.name }}{{ !last ? ', ' : '' }}
+          </span>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-icon name="resize" slot="start" color="success"></ion-icon>
+        <ion-label><strong>Altura:</strong> {{ selectedPokemon.height / 10 }} m</ion-label>
+        <ion-icon name="fitness" slot="start" color="danger"></ion-icon>
+        <ion-label><strong>Peso:</strong> {{ selectedPokemon.weight / 10 }} kg</ion-label>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Lista de Pokémon con su mini sprite real -->
+  <ion-list *ngIf="!loading">
+    <ion-list-header>
+      <ion-label><strong>Listado de Pokémon</strong> (Toca uno para ver detalles)</ion-label>
+    </ion-list-header>
+    
+    <ion-item *ngFor="let p of filteredPokemonList" (click)="selectPokemon(p.url)" button>
+      <!-- Miniatura real obtenida mediante el ID extraído de la URL -->
+      <ion-avatar slot="start">
+        <img [src]="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + getPokemonId(p.url) + '.png'" alt="{{ p.name }}" />
+      </ion-avatar>
+      
+      <ion-label class="ion-text-capitalize">
+        <h2>{{ p.name }}</h2>
+        <p>#{{ getPokemonId(p.url) }}</p>
       </ion-label>
+
+      <ion-icon name="chevron-forward" slot="end" color="medium"></ion-icon>
     </ion-item>
   </ion-list>
+
 </ion-content>
